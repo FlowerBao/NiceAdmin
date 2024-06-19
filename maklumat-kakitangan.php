@@ -1,0 +1,229 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['mytype'])=='admin')
+{
+  echo "<script>window.location.assign('index.php')</script>";
+}
+?>
+<?php include('connection/db.php');?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"><!--Responsive page-->
+
+  <title>Staff Information - Reka&Bina IBS Panel Clinic System</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons --><!--logo-->
+  <link href="img/logo%20ibs.jpg" rel="icon">  
+  <link href="img/logo%20ibs.jpg" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="category.php" class="logo d-flex align-items-center">
+        <img src="img/logo%20ibs.jpg" alt="">
+        <span class="d-none d-lg-block">PANEL CLINIC</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <!--Search box: use-->
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="search-maklumat.php">
+        <input type="text" name="search" placeholder="Staff name" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown pe-3">
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="img/admin.png" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Admin</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="logout.php">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Log Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link " href="maklumat-kakitangan.php">
+                <i class="bi bi-menu-button-wide"></i>
+                <span>Staff List</span>
+            </a>
+        </li><!-- End staff list Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="laporan-maklumat-kakitangan.php">
+                <i class="bi bi-journal-text"></i>
+                <span>Report</span>
+            </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link collapsed" href="tutorial2.php">
+          <i class="bi bi-camera-video"></i>
+          <span>Tutorial</span>
+        </a>
+      </li><!-- End Tutorial Nav -->
+    </ul>
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Staff Information</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="maklumat-kakitangan.php">Main</a></li>
+          <li class="breadcrumb-item active">Staff List</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+     <div class="row">
+         <div class="col-lg-12">
+          <div class="row">
+            <div class="card" >
+            <div class="card-body">
+               <br>
+              <div class="col-12">
+                  <form action="daftar-kakitangan.php" method="post">
+                    <input type="submit" name="submit3" id="submit3" class="btn btn-primary" value="+ Register Staff">
+                </form>
+<h3></h3><br>
+                <table class='table table-bordered table-striped'>
+                    <tr style="text-align:center;background-color:rgb(155, 190, 255);">
+                    <td style="width:10%"><strong>Staff Name</strong></td>
+                    <td style="width:10%"><strong>Visa/IC Number</strong></td>
+                    <td style="width:10%"><strong>Phone Number</strong></td>
+                    <td style="width:5%"><strong>Allocation (RM)</strong></td>
+                    <td style="width:5%"><strong>Action</strong></td>
+                    </tr>
+                    <?php
+                        if (isset($_GET['pageno'])) 
+                                {
+                                    $pageno = $_GET['pageno'];
+                                } else 
+                                {
+                                    $pageno = 1;
+                                }
+                                $no_of_records_per_page = 10;
+                                $offset = ($pageno-1) * $no_of_records_per_page;
+                                
+                                $num=1;
+                                $total_pages_sql = "SELECT COUNT(*) FROM maklumat_staf";
+                                $result = mysqli_query($con,$total_pages_sql);
+                                $total_rows = mysqli_fetch_array($result)[0];
+                                $total_pages = ceil($total_rows / $no_of_records_per_page);
+
+                                $sql = "SELECT * FROM maklumat_staf
+                                LIMIT $offset, $no_of_records_per_page";
+                                $res_data = mysqli_query($con,$sql);
+        
+                                if (mysqli_num_rows($res_data) > 0) 
+                                {
+                                    while($row = mysqli_fetch_assoc($res_data)) 
+                                    {
+
+                                ?>
+                        <tr>
+                            <td><?php echo $row["nama"]; ?></td>
+                            <td><?php echo $row["no_visa"]; ?></td>
+                            <td><?php echo $row["notelefon"]; ?></td>
+                            <td><?php echo $row["peruntukan"]; ?></td>
+                            <td>
+                                <a href="edit-bujang.php?nama=<?php echo $row['nama']; ?>" class="btn btn-success" >Edit</a><br><br>
+                                <a href="delete-staf.php?nama=<?php echo $row['nama']; ?>" class="btn btn-danger" >Delete</a>
+                            </td>
+                        </tr>
+                        <?php
+                                }
+                            } else {
+                            echo "No records";
+                            }
+                            $con->close();
+                        ?>
+                  </table>
+                  <p class="m-0"></p>
+                        <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+                                            <li class="page-item" class="<?php if($pageno <= 1){ echo 'disabled'; } ?>">
+                                                <a class="page-link" href="
+                                                <?php 
+                                                if($pageno <= 1)
+                                                { echo '#'; } 
+                                                else { echo "?pageno=".($pageno - 1); } 
+                                                ?>
+                                                " aria-label="Previous">
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?pageno=1">1</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?pageno=2">2</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?pageno=3">3</a>
+                                            </li>
+                                            <li class="page-item" class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
+                                                <a class="page-link" href="<?php if($pageno >= $total_pages){ echo "?pageno=".($pageno + 1); } else { echo "?pageno=".($pageno + 1); } ?>" aria-label="Next">
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav></div></div>
+    </div></div></div></div></div></div>
+    </section>  
+  </main><!-- End #main -->
+</body>
+<?php include ('include/footer.php');?>
+</html>
